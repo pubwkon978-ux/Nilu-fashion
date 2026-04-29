@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NILU — Modern Clothing</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #f5f0eb;
+    --blush: #e8c4b8;
+    --rose: #c97b6b;
+    --deep: #1a1008;
+    --mid: #5a3e35;
+    --light: #faf7f4;
+    --gold: #c9a96e;
+    --white: #ffffff;
+    --mustard: #c9a227;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--light);
+    color: var(--deep);
+    overflow-x: hidden;
+  }
+
+  /* ── NAVBAR ── */
+  nav {
+    position: fixed; top: 0; width: 100%; z-index: 200;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 60px;
+    background: transparent;
+    transition: background 0.5s, backdrop-filter 0.5s, border-color 0.5s;
+    border-bottom: 1px solid transparent;
+  }
+  nav.scrolled {
+    background: rgba(250,247,244,0.94);
+    backdrop-filter: blur(18px);
+    border-bottom: 1px solid rgba(201,123,107,0.15);
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 30px;
+    letter-spacing: 8px;
+    color: white;
+    font-style: italic;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.4);
+    transition: color 0.5s, text-shadow 0.5s;
+  }
+  nav.scrolled .nav-logo { color: var(--deep); text-shadow: none; }
+  .nav-logo span { color: var(--blush); }
+  nav.scrolled .nav-logo span { color: var(--rose); }
+
+  .nav-links { display: flex; gap: 36px; align-items: center; }
+  .nav-links a {
+    text-decoration: none;
+    color: rgba(255,255,255,0.88);
+    font-size: 12px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    font-weight: 500;
+    position: relative;
+    transition: color 0.3s;
+  }
+  nav.scrolled .nav-links a { color: var(--mid); }
+  .nav-links a::after {
+    content: '';
+    position: absolute; bottom: -3px; left: 0;
+    width: 0; height: 1px;
+    background: var(--blush);
+    transition: width 0.3s ease;
+  }
+  nav.scrolled .nav-links a::after { background: var(--rose); }
+  .nav-links a:hover::after { width: 100%; }
+  .nav-links a:hover { color: var(--blush); }
+  nav.scrolled .nav-links a:hover { color: var(--rose); }
+
+  .nav-right { display: flex; gap: 20px; align-items: center; }
+  .cart-btn {
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.35);
+    padding: 10px 22px;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+  }
+  nav.scrolled .cart-btn {
+    background: var(--rose);
+    border-color: var(--rose);
+  }
+  .cart-btn:hover { background: var(--rose); border-color: var(--rose); }
+  .cart-count {
+    position: absolute; top: -6px; right: -6px;
+    background: var(--gold);
+    color: white;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    font-size: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+  }
+
+  /* ── HERO VIDEO ── */
+  .hero {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    min-height: 700px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* VIDEO BACKGROUND */
+  .hero-video-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+  .hero-video-bg video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+  }
+
+  /* Multi-layer overlay for cinematic feel */
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    /* Gradient: darker at bottom and left, light at center-top */
+    background:
+      linear-gradient(to right, rgba(26,16,8,0.72) 0%, rgba(26,16,8,0.3) 55%, rgba(26,16,8,0.15) 100%),
+      linear-gradient(to top, rgba(26,16,8,0.85) 0%, rgba(26,16,8,0.1) 50%, transparent 100%);
+  }
+
+  /* Subtle vignette */
+  .hero-vignette {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(26,16,8,0.55) 100%);
+    pointer-events: none;
+  }
+
+  /* Hero content */
+  .hero-content {
+    position: relative;
+    z-index: 3;
+    width: 100%;
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 80px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  .hero-text {
+    max-width: 560px;
+    animation: heroEntrance 1.2s cubic-bezier(.25,.46,.45,.94) both;
+  }
+  @keyframes heroEntrance {
+    from { opacity: 0; transform: translateY(40px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Animated badge */
+  .nilu-frock-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, rgba(201,162,39,0.9), rgba(230,184,48,0.9));
+    backdrop-filter: blur(8px);
+    color: var(--deep);
+    padding: 7px 18px 7px 12px;
+    border-radius: 30px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    margin-bottom: 22px;
+    box-shadow: 0 4px 24px rgba(201,162,39,0.4);
+    animation: badgePulse 2.5s ease-in-out infinite, heroEntrance 1.2s 0.1s both;
+  }
+  .nilu-frock-badge .dot {
+    width: 8px; height: 8px;
+    background: var(--deep);
+    border-radius: 50%;
+    animation: dotBlink 1.2s ease-in-out infinite;
+  }
+  @keyframes badgePulse {
+    0%,100% { box-shadow: 0 4px 20px rgba(201,162,39,0.35); }
+    50% { box-shadow: 0 6px 32px rgba(201,162,39,0.65), 0 0 0 6px rgba(201,162,39,0.12); }
+  }
+  @keyframes dotBlink {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.25; }
+  }
+
+  .hero-label {
+    font-size: 11px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--blush);
+    margin-bottom: 18px;
+    display: flex; align-items: center; gap: 12px;
+    animation: heroEntrance 1.2s 0.2s both;
+  }
+  .hero-label::before {
+    content: '';
+    width: 36px; height: 1px;
+    background: var(--blush);
+    flex-shrink: 0;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 74px;
+    line-height: 1.02;
+    color: white;
+    margin-bottom: 28px;
+    text-shadow: 0 4px 40px rgba(0,0,0,0.35);
+    animation: heroEntrance 1.2s 0.3s both;
+  }
+  .hero-title em {
+    font-style: italic;
+    color: var(--blush);
+    display: block;
+  }
+
+  .hero-desc {
+    font-size: 15px;
+    line-height: 1.85;
+    color: rgba(255,255,255,0.72);
+    max-width: 400px;
+    margin-bottom: 44px;
+    font-weight: 300;
+    animation: heroEntrance 1.2s 0.45s both;
+  }
+
+  .hero-cta {
+    display: flex; gap: 16px; align-items: center;
+    animation: heroEntrance 1.2s 0.6s both;
+  }
+  .btn-primary {
+    background: var(--rose);
+    color: white;
+    padding: 16px 40px;
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(.25,.46,.45,.94);
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-primary::before {
+    content: '';
+    position: absolute; top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: white;
+    transition: left 0.4s ease;
+    z-index: 0;
+  }
+  .btn-primary:hover::before { left: 0; }
+  .btn-primary:hover { color: var(--rose); }
+  .btn-primary span { position: relative; z-index: 1; }
+  .btn-outline {
+    background: transparent;
+    color: rgba(255,255,255,0.85);
+    padding: 16px 28px;
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    border: 1px solid rgba(255,255,255,0.4);
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .btn-outline:hover { border-color: var(--blush); color: var(--blush); background: rgba(255,255,255,0.05); }
+
+  /* Floating glass tags on hero */
+  .hero-tags {
+    position: absolute;
+    right: 80px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    z-index: 3;
+    animation: heroEntrance 1.2s 0.8s both;
+  }
+  .tag {
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(18px) saturate(1.4);
+    -webkit-backdrop-filter: blur(18px) saturate(1.4);
+    padding: 14px 20px;
+    border-radius: 14px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.3);
+    border: 1px solid rgba(255,255,255,0.2);
+    font-size: 12px;
+    font-weight: 500;
+    color: white;
+    min-width: 180px;
+    animation: tagFloat 5s ease-in-out infinite;
+  }
+  .tag.tag2 { animation-delay: 1.2s; }
+  .tag.tag3 { animation-delay: 2.4s; }
+  .tag strong {
+    color: var(--blush);
+    display: block;
+    font-size: 15px;
+    margin-bottom: 3px;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+  }
+  @keyframes tagFloat {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  /* Scroll indicator */
+  .scroll-hint {
+    position: absolute;
+    bottom: 36px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255,255,255,0.5);
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    animation: heroEntrance 1s 1.2s both;
+  }
+  .scroll-line {
+    width: 1px; height: 48px;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.5), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+  @keyframes scrollPulse {
+    0% { transform: scaleY(0); transform-origin: top; opacity: 1; }
+    100% { transform: scaleY(1); transform-origin: top; opacity: 0; }
+  }
+
+  /* ── CATEGORIES ── */
+  .categories {
+    padding: 100px 80px;
+    background: var(--cream);
+  }
+  .section-header {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--rose);
+    margin-bottom: 14px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 46px;
+    color: var(--deep);
+    line-height: 1.2;
+  }
+  .section-title em { font-style: italic; color: var(--rose); }
+
+  .cat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
+  .cat-card {
+    background: white;
+    padding: 40px 20px 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(.25,.46,.45,.94);
+    position: relative;
+    overflow: hidden;
+    border: 1px solid transparent;
+  }
+  .cat-card::before {
+    content: '';
+    position: absolute; bottom: 0; left: 0;
+    width: 100%; height: 3px;
+    background: var(--rose);
+    transform: scaleX(0);
+    transition: transform 0.4s ease;
+  }
+  .cat-card:hover { transform: translateY(-10px); border-color: rgba(201,123,107,0.2); box-shadow: 0 24px 60px rgba(0,0,0,0.1); }
+  .cat-card:hover::before { transform: scaleX(1); }
+
+  .cat-card.nilu-frock-card {
+    background: linear-gradient(145deg, #fffdf5, #fff8e7);
+    border: 1.5px solid rgba(201,162,39,0.3);
+  }
+  .cat-card.nilu-frock-card::after {
+    content: 'NILU FROCK';
+    position: absolute;
+    top: 10px; right: 10px;
+    background: linear-gradient(135deg, var(--mustard), #e6b830);
+    color: var(--deep);
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    padding: 3px 8px;
+    border-radius: 20px;
+  }
+  .cat-card.nilu-frock-card::before { background: var(--mustard); }
+  .cat-card.nilu-frock-card:hover { box-shadow: 0 24px 60px rgba(201,162,39,0.2); }
+
+  .cat-icon {
+    width: 80px; height: 80px;
+    margin: 0 auto 20px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--cream);
+    border-radius: 50%;
+    transition: all 0.4s ease;
+    font-size: 36px;
+  }
+  .cat-card:hover .cat-icon { background: var(--rose); transform: scale(1.1) rotate(8deg); }
+  .cat-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: var(--deep);
+    margin-bottom: 8px;
+  }
+  .cat-count {
+    font-size: 12px;
+    color: var(--mid);
+    letter-spacing: 1px;
+  }
+
+  /* ── PRODUCTS ── */
+  .products {
+    padding: 100px 80px;
+    background: var(--light);
+  }
+  .products-header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-bottom: 50px;
+  }
+  .filter-tabs { display: flex; gap: 8px; }
+  .filter-tab {
+    padding: 8px 20px;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border: 1px solid rgba(90,62,53,0.2);
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.3s;
+    color: var(--mid);
+    border-radius: 2px;
+  }
+  .filter-tab.active, .filter-tab:hover { background: var(--rose); color: white; border-color: var(--rose); }
+
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 28px;
+  }
+  .product-card {
+    background: white;
+    border-radius: 2px;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: visible;
+  }
+  .product-card:hover { box-shadow: 0 20px 60px rgba(0,0,0,0.12); transform: translateY(-6px); }
+
+  .product-img {
+    width: 100%; height: 280px;
+    position: relative;
+    overflow: hidden;
+    background: var(--cream);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .product-emoji { font-size: 80px; transition: transform 0.5s ease; z-index: 1; }
+  .product-card:hover .product-emoji { transform: scale(1.15) rotate(-5deg); }
+
+  /* Glass popup */
+  .photo-hover-popup {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(16px) scale(0.88);
+    width: 220px;
+    background: rgba(255,255,255,0.18);
+    backdrop-filter: blur(20px) saturate(1.6);
+    -webkit-backdrop-filter: blur(20px) saturate(1.6);
+    border: 1px solid rgba(255,255,255,0.45);
+    border-radius: 18px;
+    padding: 12px;
+    box-shadow: 0 16px 60px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.6);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.45s cubic-bezier(.34,1.56,.64,1);
+    z-index: 500;
+  }
+  .product-card:hover .photo-hover-popup { opacity: 1; transform: translateX(-50%) translateY(-8px) scale(1); }
+  .photo-hover-popup img { width: 100%; height: 240px; object-fit: cover; object-position: top; border-radius: 12px; display: block; }
+  .popup-label { margin-top: 8px; text-align: center; font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--deep); }
+  .popup-price { text-align: center; font-size: 13px; color: var(--rose); font-weight: 700; margin-top: 2px; }
+
+  .product-badge {
+    position: absolute; top: 12px; left: 12px;
+    background: var(--rose); color: white;
+    font-size: 10px; letter-spacing: 1px;
+    padding: 4px 10px;
+    text-transform: uppercase;
+    z-index: 2;
+    border-radius: 2px;
+  }
+  .product-badge.nilu {
+    background: linear-gradient(135deg, var(--mustard), #e6b830);
+    color: var(--deep);
+    font-weight: 700;
+  }
+  .product-actions {
+    position: absolute; bottom: -50px; left: 0; right: 0;
+    display: flex;
+    transition: bottom 0.4s ease;
+    z-index: 2;
+  }
+  .product-card:hover .product-actions { bottom: 0; }
+  .add-cart-btn {
+    flex: 1; padding: 14px; background: var(--deep); color: white; border: none;
+    font-size: 11px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: background 0.3s;
+  }
+  .add-cart-btn:hover { background: var(--rose); }
+  .wishlist-btn {
+    padding: 14px 18px; background: white; border: none; font-size: 18px;
+    cursor: pointer; border-left: 1px solid #eee; transition: background 0.3s;
+  }
+  .wishlist-btn:hover { background: #fff0f0; }
+  .product-info { padding: 18px; }
+  .product-name { font-family: 'Playfair Display', serif; font-size: 17px; color: var(--deep); margin-bottom: 6px; }
+  .product-name .nilu-highlight {
+    background: linear-gradient(135deg, var(--mustard), #c9881a);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+  }
+  .product-cat { font-size: 11px; color: var(--mid); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px; }
+  .product-price-row { display: flex; align-items: center; gap: 10px; }
+  .price-now { font-size: 18px; font-weight: 600; color: var(--rose); }
+  .price-old { font-size: 13px; color: #aaa; text-decoration: line-through; }
+  .stars { color: var(--gold); font-size: 13px; margin-left: auto; }
+
+  /* ── CART ── */
+  .cart-overlay { position: fixed; inset: 0; background: rgba(26,16,8,0.5); z-index: 900; opacity: 0; pointer-events: none; transition: opacity 0.4s; backdrop-filter: blur(3px); }
+  .cart-overlay.open { opacity: 1; pointer-events: all; }
+  .cart-sidebar { position: fixed; top: 0; right: -480px; width: 440px; height: 100vh; background: white; z-index: 901; transition: right 0.5s cubic-bezier(.25,.46,.45,.94); display: flex; flex-direction: column; }
+  .cart-sidebar.open { right: 0; }
+  .cart-head { padding: 30px; border-bottom: 1px solid #f0ebe6; display: flex; justify-content: space-between; align-items: center; }
+  .cart-head h2 { font-family: 'Playfair Display', serif; font-size: 26px; }
+  .close-btn { width: 40px; height: 40px; border: 1px solid #ddd; background: none; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s; border-radius: 2px; }
+  .close-btn:hover { background: var(--rose); color: white; border-color: var(--rose); }
+  .cart-body { flex: 1; overflow-y: auto; padding: 20px 30px; }
+  .cart-item { display: flex; gap: 16px; padding: 16px 0; border-bottom: 1px solid #f5f0eb; align-items: center; }
+  .cart-item-img { width: 70px; height: 80px; background: var(--cream); display: flex; align-items: center; justify-content: center; font-size: 32px; flex-shrink: 0; border-radius: 4px; overflow: hidden; }
+  .cart-item-img img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+  .cart-item-info { flex: 1; }
+  .cart-item-name { font-family: 'Playfair Display', serif; font-size: 15px; margin-bottom: 4px; }
+  .cart-item-price { color: var(--rose); font-weight: 600; font-size: 14px; }
+  .qty-control { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+  .qty-btn { width: 26px; height: 26px; border: 1px solid #ddd; background: none; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+  .qty-btn:hover { background: var(--rose); color: white; border-color: var(--rose); }
+  .qty-num { font-size: 14px; font-weight: 600; min-width: 20px; text-align: center; }
+  .remove-item { padding: 6px; background: none; border: none; color: #bbb; cursor: pointer; font-size: 18px; transition: color 0.2s; }
+  .remove-item:hover { color: var(--rose); }
+  .cart-empty { text-align: center; padding: 60px 20px; color: var(--mid); }
+  .cart-empty p { font-size: 40px; margin-bottom: 12px; }
+  .cart-foot { padding: 20px 30px; border-top: 1px solid #f0ebe6; background: var(--light); }
+  .cart-summary-row { display: flex; justify-content: space-between; font-size: 13px; color: var(--mid); margin-bottom: 8px; }
+  .cart-total-row { display: flex; justify-content: space-between; font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--deep); margin: 14px 0 20px; }
+  .checkout-btn { width: 100%; padding: 18px; background: var(--deep); color: white; border: none; font-size: 12px; letter-spacing: 3px; text-transform: uppercase; cursor: pointer; transition: background 0.3s; border-radius: 2px; }
+  .checkout-btn:hover { background: var(--rose); }
+
+  /* ── CONTACT ── */
+  .contact { padding: 100px 80px; background: var(--deep); color: white; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+  .contact-text .section-label { color: var(--blush); }
+  .contact-text .section-title { color: white; }
+  .contact-text .section-title em { color: var(--blush); }
+  .contact-desc { font-size: 14px; line-height: 1.9; color: rgba(255,255,255,0.6); margin: 24px 0 40px; font-weight: 300; }
+  .contact-details { display: flex; flex-direction: column; gap: 20px; }
+  .contact-item { display: flex; gap: 16px; align-items: center; }
+  .contact-icon { width: 46px; height: 46px; background: rgba(201,123,107,0.15); border: 1px solid rgba(201,123,107,0.3); display: flex; align-items: center; justify-content: center; font-size: 18px; transition: all 0.3s; flex-shrink: 0; }
+  .contact-item:hover .contact-icon { background: var(--rose); transform: rotate(10deg) scale(1.1); }
+  .contact-item-text strong { display: block; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--blush); margin-bottom: 3px; }
+  .contact-item-text span { font-size: 14px; color: rgba(255,255,255,0.7); }
+  .contact-form { display: flex; flex-direction: column; gap: 16px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-group { display: flex; flex-direction: column; gap: 8px; }
+  .form-group label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.5); }
+  .form-group input, .form-group textarea, .form-group select { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: white; padding: 14px 16px; font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none; transition: border-color 0.3s; resize: none; border-radius: 2px; }
+  .form-group select option { background: var(--deep); }
+  .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: var(--rose); }
+  .form-group input::placeholder, .form-group textarea::placeholder { color: rgba(255,255,255,0.3); }
+  .submit-btn { padding: 16px; background: var(--rose); color: white; border: none; font-size: 12px; letter-spacing: 3px; text-transform: uppercase; cursor: pointer; transition: all 0.3s; margin-top: 8px; border-radius: 2px; }
+  .submit-btn:hover { background: var(--blush); color: var(--deep); }
+
+  footer { background: #0f0804; color: rgba(255,255,255,0.4); text-align: center; padding: 30px; font-size: 12px; letter-spacing: 2px; }
+  footer span { color: var(--rose); }
+
+  .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--deep); color: white; padding: 14px 28px; font-size: 13px; letter-spacing: 1px; z-index: 9999; transition: transform 0.4s cubic-bezier(.25,.46,.45,.94); display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); border-radius: 6px; }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast-icon { color: var(--rose); font-size: 18px; }
+
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  @media (max-width: 900px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    .hero-title { font-size: 48px; }
+    .hero-content { padding: 0 24px; }
+    .hero-tags { display: none; }
+    .cat-grid, .product-grid { grid-template-columns: repeat(2, 1fr); }
+    .categories, .products { padding: 60px 24px; }
+    .contact { grid-template-columns: 1fr; padding: 60px 24px; }
+    .cart-sidebar { width: 100%; right: -100%; }
+    .photo-hover-popup { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <div class="nav-logo">N<span>ilu</span></div>
+  <div class="nav-links">
+    <a href="#home">Home</a>
+    <a href="#categories">Collections</a>
+    <a href="#products">Shop</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <div class="nav-right">
+    <button class="cart-btn" onclick="toggleCart()">
+      🛍 Cart
+      <span class="cart-count" id="cartCount">0</span>
+    </button>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════
+     HERO — FULL SCREEN VIDEO BACKGROUND
+═══════════════════════════════════════════════ -->
+<section class="hero" id="home">
+  <!-- Video Background -->
+  <div class="hero-video-bg">
+    <video autoplay muted loop playsinline preload="auto" id="heroBgVideo">
+      <source src="nilu_video.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <!-- Overlays -->
+  <div class="hero-overlay"></div>
+  <div class="hero-vignette"></div>
+
+  <!-- Main content -->
+  <div class="hero-content">
+    <div class="hero-text">
+      <div class="nilu-frock-badge">
+        <span class="dot"></span>
+        NILU Frock — New Arrival
+      </div>
+      <div class="hero-label">2025 Collection</div>
+      <h1 class="hero-title">
+        Wear Your<br>
+        <em>Story,</em>
+        Own Your<br>Style
+      </h1>
+      <p class="hero-desc">Discover timeless elegance with Nilu's curated fashion — where every piece tells a story of grace, boldness, and modern femininity.</p>
+      <div class="hero-cta">
+        <button class="btn-primary" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})"><span>Shop Now</span></button>
+        <button class="btn-outline" onclick="document.getElementById('categories').scrollIntoView({behavior:'smooth'})">Explore</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating glass tags -->
+  <div class="hero-tags">
+    <div class="tag tag1">
+      <strong>Rs. 4,900</strong>
+      Mustard A-Line Frock
+    </div>
+    <div class="tag tag2">
+      <strong>✨ New In</strong>
+      NILU Frock Collection
+    </div>
+    <div class="tag tag3">
+      <strong>🚚 Free Delivery</strong>
+      Orders over Rs. 5,000
+    </div>
+  </div>
+
+  <!-- Scroll hint -->
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="categories" id="categories">
+  <div class="section-header reveal">
+    <div class="section-label">Shop by Category</div>
+    <h2 class="section-title">Our <em>Collections</em></h2>
+  </div>
+  <div class="cat-grid">
+    <div class="cat-card nilu-frock-card reveal" onclick="filterProducts('frock')">
+      <div class="cat-icon">👗</div>
+      <div class="cat-name">NILU Frocks</div>
+      <div class="cat-count">24 Styles</div>
+    </div>
+    <div class="cat-card reveal" onclick="filterProducts('tshirt')">
+      <div class="cat-icon">👕</div>
+      <div class="cat-name">T-Shirts</div>
+      <div class="cat-count">18 Styles</div>
+    </div>
+    <div class="cat-card reveal" onclick="filterProducts('denim')">
+      <div class="cat-icon">🩳</div>
+      <div class="cat-name">Denims</div>
+      <div class="cat-count">15 Styles</div>
+    </div>
+    <div class="cat-card reveal" onclick="filterProducts('watch')">
+      <div class="cat-icon">⌚</div>
+      <div class="cat-name">Watches</div>
+      <div class="cat-count">10 Styles</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="products" id="products">
+  <div class="products-header reveal">
+    <div>
+      <div class="section-label">Featured Items</div>
+      <h2 class="section-title">Latest <em>Arrivals</em></h2>
+    </div>
+    <div class="filter-tabs">
+      <button class="filter-tab active" onclick="filterProducts('all', this)">All</button>
+      <button class="filter-tab" onclick="filterProducts('frock', this)">Frocks</button>
+      <button class="filter-tab" onclick="filterProducts('tshirt', this)">T-Shirts</button>
+      <button class="filter-tab" onclick="filterProducts('denim', this)">Denim</button>
+      <button class="filter-tab" onclick="filterProducts('watch', this)">Watches</button>
+    </div>
+  </div>
+  <div class="product-grid" id="productGrid"></div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="contact-text reveal">
+    <div class="section-label">Get In Touch</div>
+    <h2 class="section-title">Visit Our <em>Store</em></h2>
+    <p class="contact-desc">We'd love to hear from you. Whether you have a question about our collections, sizing, or just want to say hello — we're here for you.</p>
+    <div class="contact-details">
+      <div class="contact-item">
+        <div class="contact-icon">📍</div>
+        <div class="contact-item-text">
+          <strong>Location</strong>
+          <span>45 Galle Road, Colombo 03, Sri Lanka</span>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">📞</div>
+        <div class="contact-item-text">
+          <strong>Phone</strong>
+          <span>0773414630</span>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">✉️</div>
+        <div class="contact-item-text">
+          <strong>Email</strong>
+          <span>hello@niluclothing.lk</span>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">🕐</div>
+        <div class="contact-item-text">
+          <strong>Hours</strong>
+          <span>Mon – Sat: 10AM – 8PM</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="contact-form reveal">
+    <div class="form-row">
+      <div class="form-group">
+        <label>First Name</label>
+        <input type="text" placeholder="Nilu">
+      </div>
+      <div class="form-group">
+        <label>Last Name</label>
+        <input type="text" placeholder="Perera">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" placeholder="you@example.com">
+    </div>
+    <div class="form-group">
+      <label>Phone</label>
+      <input type="tel" placeholder="+94 77 000 0000">
+    </div>
+    <div class="form-group">
+      <label>Interested In</label>
+      <select>
+        <option>NILU Frocks</option>
+        <option>T-Shirts</option>
+        <option>Denim</option>
+        <option>Watches</option>
+        <option>All Collections</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Message</label>
+      <textarea rows="4" placeholder="Tell us what you're looking for..."></textarea>
+    </div>
+    <button class="submit-btn" onclick="showToast('✅ Message sent! We\'ll be in touch soon.')">Send Message</button>
+  </div>
+</section>
+
+<footer>
+  © 2025 <span>NILU Clothing</span> — Crafted with ♥ in Sri Lanka
+</footer>
+
+<!-- CART SIDEBAR -->
+<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<div class="cart-sidebar" id="cartSidebar">
+  <div class="cart-head">
+    <h2>Your Cart 🛍</h2>
+    <button class="close-btn" onclick="toggleCart()">✕</button>
+  </div>
+  <div class="cart-body" id="cartBody"></div>
+  <div class="cart-foot" id="cartFoot">
+    <div class="cart-summary-row"><span>Subtotal</span><span id="cartSubtotal">Rs. 0</span></div>
+    <div class="cart-summary-row"><span>Delivery</span><span>Rs. 350</span></div>
+    <div class="cart-total-row"><span>Total</span><span id="cartTotal">Rs. 350</span></div>
+    <button class="checkout-btn" onclick="showToast('🎉 Proceeding to checkout!')">Checkout</button>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <span class="toast-icon">✓</span>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+  // ── NAVBAR SCROLL ──
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  // ── PRODUCTS DATA ──
+  const products = [
+    { id:1, name:'NILU Mustard Frock', cat:'frock', emoji:'👗', price:4900, old:6500, badge:'NILU', rating:'★★★★★', isNilu:true },
+    { id:2, name:'NILU Blossom A-Line', cat:'frock', emoji:'🌸', price:3800, old:5200, badge:'Sale', rating:'★★★★☆', isNilu:true },
+    { id:3, name:'Pearl Wrap Frock', cat:'frock', emoji:'👘', price:5500, old:7000, badge:'', rating:'★★★★★', isNilu:false },
+    { id:4, name:'Classic White Tee', cat:'tshirt', emoji:'👕', price:1200, old:1800, badge:'New', rating:'★★★★☆', isNilu:false },
+    { id:5, name:'Striped Cotton Tee', cat:'tshirt', emoji:'🎽', price:1500, old:2000, badge:'', rating:'★★★★☆', isNilu:false },
+    { id:6, name:'Slim Fit Denim', cat:'denim', emoji:'👖', price:3200, old:4500, badge:'Sale', rating:'★★★★★', isNilu:false },
+    { id:7, name:'Ripped Denim Shorts', cat:'denim', emoji:'🩳', price:2400, old:3200, badge:'', rating:'★★★☆☆', isNilu:false },
+    { id:8, name:'Rose Gold Watch', cat:'watch', emoji:'⌚', price:8900, old:12000, badge:'New', rating:'★★★★★', isNilu:false },
+  ];
+
+  let cart = [];
+
+  function renderProducts(filter = 'all') {
+    const grid = document.getElementById('productGrid');
+    const filtered = filter === 'all' ? products : products.filter(p => p.cat === filter);
+    grid.innerHTML = filtered.map(p => {
+      const badgeHtml = p.badge
+        ? `<div class="product-badge ${p.badge === 'NILU' ? 'nilu' : ''}">${p.badge === 'NILU' ? '⭐ NILU Frock' : p.badge}</div>`
+        : '';
+      const nameHtml = p.isNilu
+        ? `<span class="nilu-highlight">NILU</span> ${p.name.replace('NILU ', '')}`
+        : p.name;
+      return `
+      <div class="product-card reveal visible">
+        <div class="photo-hover-popup">
+          <div style="font-size:70px;display:flex;align-items:center;justify-content:center;height:200px;">${p.emoji}</div>
+          <div class="popup-label">${p.name}</div>
+          <div class="popup-price">Rs. ${p.price.toLocaleString()}</div>
+        </div>
+        <div class="product-img">
+          <div class="product-emoji">${p.emoji}</div>
+          ${badgeHtml}
+          <div class="product-actions">
+            <button class="add-cart-btn" onclick="addToCart(${p.id})">Add to Cart</button>
+            <button class="wishlist-btn">♡</button>
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-cat">${p.cat}</div>
+          <div class="product-name">${nameHtml}</div>
+          <div class="product-price-row">
+            <span class="price-now">Rs. ${p.price.toLocaleString()}</span>
+            <span class="price-old">Rs. ${p.old.toLocaleString()}</span>
+            <span class="stars">${p.rating}</span>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function filterProducts(cat, btn) {
+    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    renderProducts(cat);
+    document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function addToCart(id) {
+    const prod = products.find(p => p.id === id);
+    const existing = cart.find(c => c.id === id);
+    if (existing) existing.qty++;
+    else cart.push({ ...prod, qty: 1 });
+    updateCart();
+    showToast(`🛍 ${prod.name} added to cart!`);
+  }
+
+  function removeFromCart(id) {
+    cart = cart.filter(c => c.id !== id);
+    updateCart();
+  }
+
+  function changeQty(id, delta) {
+    const item = cart.find(c => c.id === id);
+    if (!item) return;
+    item.qty += delta;
+    if (item.qty <= 0) removeFromCart(id);
+    else updateCart();
+  }
+
+  function updateCart() {
+    const count = cart.reduce((s, c) => s + c.qty, 0);
+    document.getElementById('cartCount').textContent = count;
+    const body = document.getElementById('cartBody');
+    if (cart.length === 0) {
+      body.innerHTML = `<div class="cart-empty"><p>🛍</p><div>Your cart is empty</div></div>`;
+      document.getElementById('cartSubtotal').textContent = 'Rs. 0';
+      document.getElementById('cartTotal').textContent = 'Rs. 350';
+      return;
+    }
+    body.innerHTML = cart.map(item => `
+      <div class="cart-item">
+        <div class="cart-item-img"><span style="font-size:32px">${item.emoji}</span></div>
+        <div class="cart-item-info">
+          <div class="cart-item-name">${item.name}</div>
+          <div class="cart-item-price">Rs. ${item.price.toLocaleString()}</div>
+          <div class="qty-control">
+            <button class="qty-btn" onclick="changeQty(${item.id}, -1)">−</button>
+            <span class="qty-num">${item.qty}</span>
+            <button class="qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
+          </div>
+        </div>
+        <button class="remove-item" onclick="removeFromCart(${item.id})">✕</button>
+      </div>`).join('');
+    const sub = cart.reduce((s, c) => s + c.price * c.qty, 0);
+    document.getElementById('cartSubtotal').textContent = `Rs. ${sub.toLocaleString()}`;
+    document.getElementById('cartTotal').textContent = `Rs. ${(sub + 350).toLocaleString()}`;
+  }
+
+  function toggleCart() {
+    document.getElementById('cartSidebar').classList.toggle('open');
+    document.getElementById('cartOverlay').classList.toggle('open');
+  }
+
+  let toastTimer;
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  // Scroll reveal
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i * 80);
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  renderProducts();
+</script>
+</body>
+</html>
